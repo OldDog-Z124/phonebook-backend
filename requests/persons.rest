@@ -1,7 +1,7 @@
-GET http://localhost:3001/api/persons
+GET http://localhost:8080/api/persons
 
 ###
-POST http://localhost:3001/api/persons HTTP/1.1
+POST http://localhost:8080/api/persons HTTP/1.1
 Content-Type: application/json
 
 {
@@ -10,13 +10,31 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3001/api/persons HTTP/1.1
+POST http://localhost:8080/api/persons HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Zhao ZhiHao",
+  "number": "134-09355896"
+}
+
+###
+PUT http://localhost:8080/api/persons/642846278d3068f0f3394138 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Zhao ZhiHao",
+  "number": "134-09355896"
+}
+
+###
+POST http://localhost:8080/api/persons HTTP/1.1
 Content-Type: application/json
 
 { }
 
 ###
-POST http://localhost:3001/api/persons HTTP/1.1
+POST http://localhost:8080/api/persons HTTP/1.1
 Content-Type: application/json
 
 {
@@ -24,7 +42,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3001/api/persons HTTP/1.1
+POST http://localhost:8080/api/persons HTTP/1.1
 Content-Type: application/json
 
 {
@@ -32,13 +50,13 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3001/api/persons/1
+GET http://localhost:8080/api/persons/642846278d3068f0f3394138
 
 ###
-GET http://localhost:3001/api/persons/100
+GET http://localhost:8080/api/persons/100
 
 ###
 DELETE http://localhost:3001/api/persons/1
 
 ###
-DELETE http://localhost:3001/api/persons/100
+DELETE http://localhost:8080/api/persons/642845ee8d3068f0f3394134
