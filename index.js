@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 const app = express()
 
@@ -12,6 +13,7 @@ morgan.token('body', (request, response) => {
   ) 
 })
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
@@ -35,6 +37,12 @@ let persons = [
     "id": 4,
     "name": "Mary Poppendieck", 
     "number": "39-23-6423122"
+  }
+  ,
+  { 
+    "id": 5,
+    "name": "Mar Poppendieck", 
+    "number": "3-23-6423122"
   }
 ]
 
