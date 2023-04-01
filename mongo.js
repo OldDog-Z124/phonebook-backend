@@ -43,6 +43,15 @@ else if (process.argv.length === 3) {
       mongoose.connection.close()
     })
 }
+else if (process.argv.length === 4) {
+  const name = process.argv[3]
+  Person.find({ name })
+    .then(person => {
+      console.log(person)
+      console.log('-- --- --')
+      mongoose.connection.close()
+    })
+}
 else {
   mongoose.connection.close()
 }
