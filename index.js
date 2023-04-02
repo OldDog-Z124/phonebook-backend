@@ -3,15 +3,16 @@ const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/person')
+
 const app = express()
 
-morgan.token('body', (request, response) => {
+morgan.token('body', (request) => {
   if (!Object.keys(request.body).length) {
     return ' '
   }
-  return(
+  return (
     `\n${JSON.stringify(request.body, null, 2)}\n`
-  ) 
+  )
 })
 
 app.use(express.static('build'))
@@ -25,7 +26,7 @@ app.get('/', (request, response) => {
 
 app.get('/info', (request, response) => {
   Person.find({})
-    .then(persons => {
+    .then((persons) => {
       const content = `
         <p>Phonebook has info for ${persons.length} people</p>
         <p>${new Date()}</p>
@@ -37,15 +38,16 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
-    .then(persons => {
+    .then((persons) => {
       response.json(persons)
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
+  const { name, number } = request.body
 
+  /*
   if (!body.name && !body.number) {
     return response.status(400).json({
       error: 'name and number missing'
@@ -83,54 +85,65 @@ app.post('/api/persons', (request, response, next) => {
       }
     })
     .catch(error => next(error))
-  
+    */
+
+  const person = new Person({
+    name,
+    number,
+  })
+  person.save()
+    .then((savedPerson) => {
+      response.json(savedPerson)
+    })
+    .catch((error) => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
-    .then(person => {
+    .then((person) => {
       if (person) {
         response.json(person)
-      }
-      else {
+      } else {
         response.status(404).end()
       }
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const id = request.params.id
+  const { id } = request.params
   const { name, number } = request.body
   const person = { name, number }
 
-  Person.findByIdAndUpdate(id, person, { new: true })
-    .then(person => {
-      response.json(person)
+  Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query' })
+    .then((updatedPerson) => {
+      response.json(updatedPerson)
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(person => {
+    .then((person) => {
       console.log(person)
       response.status(204).end()
     })
-    .catch(error => next(error))
+    .catch((error) => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
-  console.log(`-- error --`)
-  console.log(`name: ${error.name}`)
-  console.log(`message: ${error.message}`)
-  console.log(`-- --- --`)
+  console.log(error)
+  if (error.name === 'ValidationError') {
+    response.status(400).json({ error: error.message })
+  } else if (error.name === 'MongoServerError') {
+    response.status(400).json({ error: error.message })
+  }
   next(error)
 }
 
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, (request, response) => {
+app.listen(PORT, () => {
   console.log(`Runing In PORT ${PORT}`)
 })
